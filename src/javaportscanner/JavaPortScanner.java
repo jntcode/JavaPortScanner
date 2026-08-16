@@ -9,7 +9,7 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.io.IOException;
-
+import java.util.ArrayList;
 
 public class JavaPortScanner {
 
@@ -17,10 +17,8 @@ public class JavaPortScanner {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter IP address: ");
         String ipAddress = scanner.nextLine();
-        try {
-            InetAddress.getByName(ipAddress);
-        } catch (UnknownHostException e) {
-            System.out.println("Invalid IP address.");
+        if (!isValidTarget(ipAddress)) {
+            System.out.println("Invalid target.");
             return;
         }
 
@@ -45,13 +43,10 @@ public class JavaPortScanner {
             System.out.println("Error: Enter a valid port number.");
             return;
         }
-        if (endingPort < startingPort
-                || startingPort < 1
-                || startingPort > 65535
-                || endingPort < 1
-                || endingPort > 65535) {
+        if (!isValidPortRange(startingPort, endingPort)) {
             System.out.println("Error: Enter a valid port range (1-65535)");
             return;
+
         }
 
         scanPorts(ipAddress, startingPort, endingPort);
@@ -59,11 +54,26 @@ public class JavaPortScanner {
     }
 
     public static void scanPorts(String ipAddress, int startingPort, int endingPort) {
+        ArrayList<Integer> openPorts = new ArrayList<>();
         for (int port = startingPort; port <= endingPort; port++) {
             PortStatus result = isPortOpen(ipAddress, port);
             System.out.println(port + ": " + result);
+            if (result == PortStatus.OPEN) {
+                openPorts.add(port);
+            }
+        }
+        for (int port : openPorts) {
+            System.out.println(port + " is Open.");
 
         }
+        if (openPorts.size() == 0) {
+            System.out.println("No open ports found.");
+        } else {
+        System.out.println("Total open ports: " + openPorts.size()); {
+    }
+        
+        }
+
     }
 
     public static PortStatus isPortOpen(String ipAddress, int port) {
@@ -89,11 +99,30 @@ public class JavaPortScanner {
 
     }
 
+    public static boolean isValidTarget(String target) {
+        try {
+            InetAddress.getByName(target);
+            return true;
+        } catch (UnknownHostException e) {
+            return false;
+        }
+    }
+
+    public static boolean isValidPortRange(int startingPort, int endingPort) {
+        if (startingPort >= 1 && startingPort <= 65535
+                && endingPort >= 1 && endingPort <= 65535
+                && endingPort >= startingPort) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     enum PortStatus {
         OPEN,
         CLOSED,
         FILTERED,
         ERROR
     }
-
 }
