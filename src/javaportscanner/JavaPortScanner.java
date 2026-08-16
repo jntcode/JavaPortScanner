@@ -24,24 +24,19 @@ public class JavaPortScanner {
             System.out.println("Invalid target.");
             return;
         }
-
         System.out.println("Scanning IP: " + ipAddress);
         System.out.println("Enter starting port: ");
-
         int startingPort;
         int endingPort;
-
         try {
             startingPort = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Error: Enter a valid port number.");
             return;
-
         }
         System.out.println("Enter ending port: ");
-
         try {
-            endingPort = Integer.parseInt(scanner.nextLine());;
+            endingPort = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Error: Enter a valid port number.");
             return;
@@ -49,7 +44,6 @@ public class JavaPortScanner {
         if (!isValidPortRange(startingPort, endingPort)) {
             System.out.println("Error: Enter a valid port range (1-65535)");
             return;
-
         }
 
         scanPorts(ipAddress, startingPort, endingPort);
@@ -62,10 +56,8 @@ public class JavaPortScanner {
         System.out.println("Scanning " + ipAddress + " from port " + startingPort + " to " + endingPort + ".");
         for (int port = startingPort; port <= endingPort; port++) {
             int currentPort = port;
-
             executor.submit(() -> {
                 PortStatus result = isPortOpen(ipAddress, currentPort);
-
                 if (result == PortStatus.OPEN) {
                     synchronized (openPorts) {
                         openPorts.add(currentPort);
@@ -74,47 +66,33 @@ public class JavaPortScanner {
             });
         }
         executor.shutdown();
-
         try {
             executor.awaitTermination(1, TimeUnit.HOURS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-
         }
         for (int port : openPorts) {
             System.out.println(port + " is Open - " + getServiceName(port));
-
         }
         if (openPorts.isEmpty()) {
             System.out.println("No open ports found.");
         } else {
             System.out.println("Total open ports: " + openPorts.size());
-
         }
-
     }
 
     public static PortStatus isPortOpen(String ipAddress, int port) {
         try (Socket socket = new Socket()) {
-
             SocketAddress address = new InetSocketAddress(ipAddress, port);
             socket.connect(address, 1000);
-
             return PortStatus.OPEN;
-
         } catch (ConnectException e) {
-
             return PortStatus.CLOSED;
-
         } catch (SocketTimeoutException e) {
-
             return PortStatus.FILTERED;
-
         } catch (IOException e) {
-
             return PortStatus.ERROR;
         }
-
     }
 
     public static boolean isValidTarget(String target) {
@@ -134,7 +112,6 @@ public class JavaPortScanner {
         } else {
             return false;
         }
-
     }
 
     public static String getServiceName(int port) {
@@ -171,7 +148,7 @@ public class JavaPortScanner {
                 return "Unknown";
         }
     }
-
+    
     enum PortStatus {
         OPEN,
         CLOSED,
