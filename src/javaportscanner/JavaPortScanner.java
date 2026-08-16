@@ -10,6 +10,9 @@ import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class JavaPortScanner {
 
@@ -29,7 +32,7 @@ public class JavaPortScanner {
         int endingPort;
 
         try {
-            startingPort = Integer.valueOf(scanner.nextLine());
+            startingPort = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Error: Enter a valid port number.");
             return;
@@ -38,7 +41,7 @@ public class JavaPortScanner {
         System.out.println("Enter ending port: ");
 
         try {
-            endingPort = Integer.valueOf(scanner.nextLine());
+            endingPort = Integer.parseInt(scanner.nextLine());;
         } catch (NumberFormatException e) {
             System.out.println("Error: Enter a valid port number.");
             return;
@@ -55,23 +58,38 @@ public class JavaPortScanner {
 
     public static void scanPorts(String ipAddress, int startingPort, int endingPort) {
         ArrayList<Integer> openPorts = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        System.out.println("Scanning " + ipAddress + " from port " + startingPort + " to " + endingPort + ".");
         for (int port = startingPort; port <= endingPort; port++) {
-            PortStatus result = isPortOpen(ipAddress, port);
-            System.out.println(port + ": " + result);
-            if (result == PortStatus.OPEN) {
-                openPorts.add(port);
-            }
+            int currentPort = port;
+
+            executor.submit(() -> {
+                PortStatus result = isPortOpen(ipAddress, currentPort);
+
+                if (result == PortStatus.OPEN) {
+                    synchronized (openPorts) {
+                        openPorts.add(currentPort);
+                    }
+                }
+            });
         }
-        for (int port : openPorts) {
-            System.out.println(port + " is Open.");
+        executor.shutdown();
+
+        try {
+            executor.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
 
         }
-        if (openPorts.size() == 0) {
+        for (int port : openPorts) {
+            System.out.println(port + " is Open - " + getServiceName(port));
+
+        }
+        if (openPorts.isEmpty()) {
             System.out.println("No open ports found.");
         } else {
-        System.out.println("Total open ports: " + openPorts.size()); {
-    }
-        
+            System.out.println("Total open ports: " + openPorts.size());
+
         }
 
     }
@@ -117,6 +135,41 @@ public class JavaPortScanner {
             return false;
         }
 
+    }
+
+    public static String getServiceName(int port) {
+        switch (port) {
+            case 21:
+                return "FTP";
+            case 22:
+                return "SSH";
+            case 23:
+                return "Telnet";
+            case 25:
+                return "SMTP";
+            case 53:
+                return "DNS";
+            case 80:
+                return "HTTP";
+            case 110:
+                return "POP3";
+            case 143:
+                return "IMAP";
+            case 443:
+                return "HTTPS";
+            case 3306:
+                return "MySQL";
+            case 5432:
+                return "PostgreSQL";
+            case 8080:
+                return "HTTP-Alt";
+            case 135:
+                return "MS RPC";
+            case 445:
+                return "SMB";
+            default:
+                return "Unknown";
+        }
     }
 
     enum PortStatus {
