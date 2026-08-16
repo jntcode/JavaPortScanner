@@ -2,7 +2,7 @@
 
 
 
-\# JavaPortScanner
+# JavaPortScanner
 
 
 
@@ -14,11 +14,11 @@ Um simples scanner de portas TCP desenvolvido em Java para fins de aprendizado.
 
 
 
-\## 🇺🇸 English
+## 🇺🇸 English
 
 
 
-\### About
+### About
 
 
 
@@ -30,7 +30,7 @@ The project uses multithreading to scan multiple ports concurrently.
 
 
 
-\### Features
+### Features
 
 
 
@@ -52,21 +52,20 @@ The project uses multithreading to scan multiple ports concurrently.
 
 
 
-\* Java
+* Java
 
-\* Java Sockets
+* Java Sockets
 
-\* TCP
+* TCP
 
-\* Multithreading
+* Multithreading
 
-\* ExecutorService
+* ExecutorService
 
-\* NetBeans
+* NetBeans
 
 
-
-\### Example
+### Example
 
 
 
@@ -104,11 +103,11 @@ Total open ports: 2
 
 
 
-\\## 🇧🇷 Português
+## 🇧🇷 Português
 
 
 
-\\### Sobre
+### Sobre
 
 
 
@@ -128,39 +127,39 @@ O projeto utiliza \\\*\\\*multithreading\\\*\\\* para verificar várias portas s
 
 
 
-\\\* Validação de IP/hostname
+* Validação de IP/hostname
 
-\\\* Scanner de portas TCP
+* Scanner de portas TCP
 
-\\\* Validação do intervalo de portas (`1-65535`)
+* Validação do intervalo de portas (`1-65535`)
 
-\\\* Identificação de portas abertas, fechadas e filtradas
+* Identificação de portas abertas, fechadas e filtradas
 
-\\\* Identificação de serviços comuns (HTTP, HTTPS, SSH, SMB, etc.)
+* Identificação de serviços comuns (HTTP, HTTPS, SSH, SMB, etc.)
 
-\\\* Scanner multithread utilizando ExecutorService
-
-
-
-\\### Tecnologias
+* Scanner multithread utilizando ExecutorService
 
 
 
-\\\* Java
-
-\\\* Java Sockets
-
-\\\* TCP
-
-\\\* Multithreading
-
-\\\* ExecutorService
-
-\\\* NetBeans
+### Tecnologias
 
 
 
-\\## Disclaimer
+* Java
+
+* Java Sockets
+
+* TCP
+
+* Multithreading
+
+* ExecutorService
+
+* NetBeans
+
+
+
+## Disclaimer
 
 
 
